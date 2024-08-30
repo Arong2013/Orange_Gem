@@ -86,6 +86,29 @@ public class Bug : MonoBehaviour
                 ground.ChangeGround();
             }
         }
+        // 서서히 투명화하고 삭제
+        StartCoroutine(FadeOutAndDestroy());
+    }
+    private IEnumerator FadeOutAndDestroy()
+    {
+        SpriteRenderer[] spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+        float fadeDuration = 1f;
+        float fadeTime = 0f;
+
+        while (fadeTime < fadeDuration)
+        {
+            foreach (SpriteRenderer sr in spriteRenderers)
+            {
+                Color color = sr.color;
+                color.a = Mathf.Lerp(1f, 0f, fadeTime / fadeDuration);
+                sr.color = color;
+            }
+
+            fadeTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 오브젝트 삭제
         Destroy(gameObject);
     }
 }

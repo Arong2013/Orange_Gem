@@ -73,4 +73,11 @@ public class Ground : SerializedMonoBehaviour
         yield return new WaitForSeconds(levelUpCooldown); // 쿨다운 시간 대기
         canLevelUp = true; // 다시 레벨업 가능 상태로 설정
     }
+
+    public void ToBad()
+    {
+        levelUpCount = 0;
+        isGood = false;
+        spriteRenderer.sprite = BadGround;
+    }
 }
