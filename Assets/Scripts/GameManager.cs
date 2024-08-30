@@ -110,7 +110,7 @@ public class GameManager : Singleton<GameManager>
         {
             yield return new WaitForSeconds(18f); // 18초 대기
 
-            int maxSpecificObjectCount = 3; // 생성할 최대 개수
+            int maxSpecificObjectCount = 6; // 생성할 최대 개수
             int specificObjectCount = 0;
 
             // 레벨이 2 이상인 오브젝트들에서 특정 오브젝트 생성
@@ -118,7 +118,7 @@ public class GameManager : Singleton<GameManager>
             {
                 if (ground.levelUpCount >= 2 && specificObjectCount < maxSpecificObjectCount)
                 {
-                    if (UnityEngine.Random.value <= 0.01f) // 1% 확률
+                    if (UnityEngine.Random.value <= 0.10f) // 1% 확률
                     {
                         GameObject randomObject = specificObjectsToSpawn[UnityEngine.Random.Range(0, specificObjectsToSpawn.Count)];
                         Instantiate(randomObject, ground.transform.position, Quaternion.identity);

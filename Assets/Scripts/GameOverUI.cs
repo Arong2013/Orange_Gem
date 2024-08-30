@@ -23,11 +23,14 @@ public class GameOverUI : MonoBehaviour
     private IEnumerator DisplayGameOverStats()
     {
         // GameManager에서 통계 정보를 받아와서 텍스트로 구성
+        float goodGroundPercentage = gameManager.GetGoodGroundPercentage();
+
         string statsText = $"Bugs: Created = {gameManager.totalBugsCreated}, Died = {gameManager.totalBugsDied}\n" +
                            $"Birds: Created = {gameManager.totalBirdsCreated}, Died = {gameManager.totalBirdsDied}\n" +
                            $"Trees: Created = {gameManager.totalTreesCreated}, Died = {gameManager.totalTreesDied}\n" +
-                           $"Dandelion: Created = {gameManager.totalOriMinDlesCreated}, Died = {gameManager.totalOriMinDlesDied}\n\n" +
-                           "R 키를 눌러 다시 시작할 수 있습니다.";
+                           $"Dandelion: Created = {gameManager.totalOriMinDlesCreated}, Died = {gameManager.totalOriMinDlesDied}\n" +
+                           $"Good Ground Percentage: {goodGroundPercentage + 20:F2}%\n\n" +
+                           "Press R to restart.";
 
         gameOverStatsText.text = ""; // 텍스트 초기화
 

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -13,8 +12,10 @@ public class MindleSeed : MonoBehaviour
     public float movementDuration = 5f; // 이동에 걸리는 시간
     public float movementRadius = 10f; // 이동할 반경
 
-
     public bool SpawnMothers;
+
+    private bool facingRight = true; // 현재 바라보고 있는 방향을 저장
+    private bool canDash = true; // 대쉬 가능 여부
 
     private void Start()
     {
@@ -22,7 +23,6 @@ public class MindleSeed : MonoBehaviour
         {
             Invoke("RemoveObject", lifeTime);
         }
-
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -31,6 +31,35 @@ public class MindleSeed : MonoBehaviour
         {
             component.ChangeGround();
         }
+
+        if (isMonther && other.gameObject.TryGetComponent<OriMinDle>(out OriMinDle oriMinDle) && canDash)
+        {
+            // Rigidbody2D의 mass를 0.8로 설정
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                StartCoroutine(TemporaryMassChange(rb));
+            }
+        }
+    }
+
+    private IEnumerator TemporaryMassChange(Rigidbody2D rb)
+    {
+        // 대쉬 불가능 설정
+        canDash = false;
+
+        // mass를 0.8로 설정
+        rb.mass = 0.8f;
+
+        // 2초 대기
+        yield return new WaitForSeconds(2f);
+
+        // mass를 1로 복구
+        rb.mass = 1f;
+
+        // 10초 후 다시 대쉬 가능
+        yield return new WaitForSeconds(5f);
+        canDash = true;
     }
 
     private void RemoveObject()
@@ -59,7 +88,7 @@ public class MindleSeed : MonoBehaviour
             else
             {
                 // 20% 확률로 SpawnMothers를 true로 설정
-                if (Random.value <= 0.2f) // Random.value는 0.0f에서 1.0f 사이의 값을 반환합니다.
+                if (Random.value <= 0.2f)
                 {
                     newObject.GetComponent<MindleSeed>().SpawnMothers = true;
                 }
@@ -75,6 +104,7 @@ public class MindleSeed : MonoBehaviour
             Random.Range(-movementRadius, movementRadius),
             0f
         );
+
         obj.transform.DOMove(targetPosition, movementDuration);
         yield return null;
     }
