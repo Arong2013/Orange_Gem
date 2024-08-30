@@ -18,7 +18,11 @@ public class MindleSeed : MonoBehaviour
 
     private void Start()
     {
-        Invoke("RemoveObject", lifeTime);
+        if (!isMonther)
+        {
+            Invoke("RemoveObject", lifeTime);
+        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -79,10 +83,5 @@ public class MindleSeed : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, searchRadius);
-    }
-    private void OnDestroy()
-    {
-        if (SpawnMothers)
-            Instantiate(GameManager.Instance.Mindle.gameObject, transform.position, Quaternion.identity);
     }
 }
