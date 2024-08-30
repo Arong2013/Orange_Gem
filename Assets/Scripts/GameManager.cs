@@ -108,8 +108,6 @@ public class GameManager : Singleton<GameManager>
                     }
                 }
             }
-
-
             // 디버그 로그 출력
             Debug.Log($"레벨이 1 이상인 Ground 오브젝트 수: {filteredGrounds.Count}, 생성된 Mindle 수: {mindleCount}, 생성된 특정 오브젝트 수: {specificObjectCount}");
         }

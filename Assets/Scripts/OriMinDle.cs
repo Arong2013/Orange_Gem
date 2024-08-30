@@ -9,19 +9,51 @@ public class OriMinDle : MonoBehaviour
     public float delayBeforeSpawn = 5f; // 오브젝트 생성까지의 대기 시간
     public float movementRadius = 10f; // 이동할 반경
     public float movementDuration = 5f; // 이동에 걸리는 시간
+    public Sprite m1, m2, m3;
     private void Start()
     {
         // StartCoroutine을 통해 딜레이 후 오브젝트를 생성하는 코루틴 실행
         StartCoroutine(SpawnObjectAfterDelay());
     }
-
     private IEnumerator SpawnObjectAfterDelay()
     {
-        // 지정된 시간만큼 대기
+        // 처음에 오브젝트의 크기를 작게 설정
+        transform.localScale = Vector3.zero;
+
+        // 일정 시간 동안 크기를 원래대로 돌려놓기
+        transform.DOScale(new Vector3(0.5f, 0.5f, 0.5f), delayBeforeSpawn)
+            .OnUpdate(() =>
+            {
+                // 현재 스케일을 기반으로 스프라이트 변경
+                float currentScale = transform.localScale.x;
+
+                if (Mathf.Approximately(currentScale, 0.1f))
+                {
+                    // 스프라이트를 0.1에 해당하는 것으로 변경
+                    GetComponent<SpriteRenderer>().sprite = m1;
+                }
+                else if (Mathf.Approximately(currentScale, 0.3f))
+                {
+                    // 스프라이트를 0.3에 해당하는 것으로 변경
+                    GetComponent<SpriteRenderer>().sprite = m2;
+                }
+                else if (Mathf.Approximately(currentScale, 0.5f))
+                {
+                    // 스프라이트를 0.5에 해당하는 것으로 변경
+                    GetComponent<SpriteRenderer>().sprite = m3;
+                }
+            });
+
+        // 크기가 원래대로 돌아온 후 대기
         yield return new WaitForSeconds(delayBeforeSpawn);
+
+        // 오브젝트 생성
         SpawnObjects();
+
+        // 원래 오브젝트는 파괴
         Destroy(gameObject);
     }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.TryGetComponent<Ground>(out Ground component) && component.isGood == false)
