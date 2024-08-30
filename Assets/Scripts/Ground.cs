@@ -45,10 +45,6 @@ public class Ground : SerializedMonoBehaviour
 
     private Sprite GetSpriteForCurrentLevel()
     {
-        if (levelSprites.ContainsKey(levelUpCount))
-        {
-            return levelSprites[levelUpCount];
-        }
         return BadGround; // 레벨에 해당하는 스프라이트가 없으면 기본 스프라이트로 설정
     }
 }
