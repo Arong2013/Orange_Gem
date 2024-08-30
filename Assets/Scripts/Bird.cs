@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Unity.VisualScripting;
 
 public class Bird : MonoBehaviour
 {
     public float moveSpeed = 5f; // 새의 이동 속도
     public float height = 2f; // 포물선의 높이
     public int requiredToEat = 3; // 새가 특정 오브젝트를 생성하기 위해 필요한 먹이 수
-    public GameObject specialObject; // 일정 개수 먹으면 생성할 오브젝트
-    public Vector2 moveArea = new Vector2(100f, 100f); // 이동할 영역의 크기
+
+    public Vector2 moveArea = new Vector2(100f, 70f); // 이동할 영역의 크기
     public float generationCooldown = 6f; // 특수 오브젝트 생성 쿨다운
     public float detectionRadius = 10f; // OriMinDle 또는 Bug를 탐지할 반경
     public GameObject poopPrefab; // 똥 프리팹
@@ -55,7 +56,7 @@ public class Bird : MonoBehaviour
                 // 목표 위치를 무작위 위치로 설정
                 Vector3 randomTargetPosition = new Vector3(
                     Random.Range(0f, moveArea.x),
-                    Random.Range(0f, moveArea.y),
+                    Random.Range(50f, 70f),
                     0f
                 );
                 MoveInParabola(randomTargetPosition);
@@ -78,6 +79,13 @@ public class Bird : MonoBehaviour
         float distance = Vector3.Distance(startPosition, targetPosition);
         float moveTime = distance / moveSpeed;
 
+        // 좌우 반전 체크
+        if ((targetPosition.x > startPosition.x && transform.localScale.x < 0) ||
+            (targetPosition.x < startPosition.x && transform.localScale.x > 0))
+        {
+            Flip();
+        }
+
         // DOTween을 사용하여 포물선 경로로 이동
         transform.DOPath(new Vector3[] { startPosition, midPoint, targetPosition }, moveTime, PathType.CatmullRom)
             .SetEase(Ease.Linear)
@@ -86,6 +94,13 @@ public class Bird : MonoBehaviour
                 // 이동 완료 후 다음 이동을 위해 시작 위치 업데이트
                 startPosition = targetPosition;
             });
+    }
+    private void Flip()
+    {
+        // 스프라이트를 좌우 반전
+        Vector3 localScale = transform.localScale;
+        localScale.x *= -1;
+        transform.localScale = localScale;
     }
 
     private Collider2D FindNearestTarget()
@@ -125,14 +140,14 @@ public class Bird : MonoBehaviour
                 // 먹은 개수가 특정 수에 도달하면 오브젝트 생성 시작
                 if (eatenCount >= requiredToEat)
                 {
-                    StartCoroutine(GenerateObjects()); // 오브젝트 생성 코루틴 시작
+                    StartCoroutine(GenerateAndPoopRoutine()); // 오브젝트 생성 코루틴 시작
                     eatenCount = 0; // 먹이 개수 초기화
                 }
             }
         }
     }
 
-    private IEnumerator GenerateObjects()
+    private IEnumerator GenerateAndPoopRoutine()
     {
         isGenerating = true;
         float generationDuration = Random.Range(20f, 30f); // 20~30초 동안 생성
@@ -140,7 +155,23 @@ public class Bird : MonoBehaviour
 
         while (timePassed < generationDuration)
         {
-            Instantiate(specialObject, transform.position, Quaternion.identity);
+            // 특정 오브젝트 생성
+            Instantiate(poopPrefab, transform.position, Quaternion.identity);
+
+            // 일정 시간마다 똥 생성
+            if (!isPooping)
+            {
+                isPooping = true;
+
+                // 똥 생성
+                Instantiate(poopPrefab, transform.position, Quaternion.identity);
+
+                // 2초 동안 멈춤
+                yield return new WaitForSeconds(2f);
+
+                isPooping = false;
+            }
+
             yield return new WaitForSeconds(generationCooldown); // 쿨다운마다 생성
             timePassed += generationCooldown;
         }
@@ -166,6 +197,7 @@ public class Bird : MonoBehaviour
 
             // 똥 누는 동작 종료
             isPooping = false;
+            yield return false;
         }
     }
 

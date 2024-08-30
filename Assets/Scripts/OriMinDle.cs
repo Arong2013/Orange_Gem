@@ -10,11 +10,16 @@ public class OriMinDle : MonoBehaviour
     public float movementRadius = 10f; // 이동할 반경
     public float movementDuration = 5f; // 이동에 걸리는 시간
     public Sprite m1, m2, m3;
+
     private void Start()
     {
+        // GameManager에 OriMinDle 생성 증가 보고
+        GameManager.Instance.IncrementOriMinDleCreated();
+
         // StartCoroutine을 통해 딜레이 후 오브젝트를 생성하는 코루틴 실행
         StartCoroutine(SpawnObjectAfterDelay());
     }
+
     private IEnumerator SpawnObjectAfterDelay()
     {
         // 처음에 오브젝트의 크기를 작게 설정
@@ -29,17 +34,14 @@ public class OriMinDle : MonoBehaviour
 
                 if (Mathf.Approximately(currentScale, 0.1f))
                 {
-                    // 스프라이트를 0.1에 해당하는 것으로 변경
                     GetComponent<SpriteRenderer>().sprite = m1;
                 }
                 else if (Mathf.Approximately(currentScale, 0.3f))
                 {
-                    // 스프라이트를 0.3에 해당하는 것으로 변경
                     GetComponent<SpriteRenderer>().sprite = m2;
                 }
                 else if (Mathf.Approximately(currentScale, 0.5f))
                 {
-                    // 스프라이트를 0.5에 해당하는 것으로 변경
                     GetComponent<SpriteRenderer>().sprite = m3;
                 }
             });
@@ -61,6 +63,7 @@ public class OriMinDle : MonoBehaviour
             component.ChangeGround();
         }
     }
+
     private void SpawnObjects()
     {
         int randIndex = Random.Range(0, spawnCount); // 특정 오브젝트에 추가 행동을 위한 랜덤 인덱스 설정
@@ -77,7 +80,7 @@ public class OriMinDle : MonoBehaviour
             else
             {
                 // 20% 확률로 SpawnMothers를 true로 설정
-                if (Random.value <= 0.2f) // Random.value는 0.0f에서 1.0f 사이의 값을 반환합니다.
+                if (Random.value <= 0.2f)
                 {
                     newObject.GetComponent<MindleSeed>().SpawnMothers = true;
                 }
@@ -97,4 +100,9 @@ public class OriMinDle : MonoBehaviour
         yield return null;
     }
 
+    private void OnDestroy()
+    {
+        // GameManager에 OriMinDle 사망 증가 보고
+        GameManager.Instance.IncrementOriMinDleDied();
+    }
 }

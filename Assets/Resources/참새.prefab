@@ -1043,7 +1043,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6659248860535777836}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 42.2, y: 53.1, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
@@ -1065,7 +1065,7 @@ Transform:
   - {fileID: 104827961694480062}
   - {fileID: 1273221055096881488}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &3238281272878782865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1078,13 +1078,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c8bdff5887ded54d96c6e1ef68fedcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 7
   height: 3
   requiredToEat: 1
-  specialObject: {fileID: 6027124257442335951, guid: 58a47479ccb3cdf47bb7ec61510f06e1, type: 3}
   moveArea: {x: 100, y: 100}
   generationCooldown: 6
   detectionRadius: 10
+  poopPrefab: {fileID: 6027124257442335951, guid: 58a47479ccb3cdf47bb7ec61510f06e1, type: 3}
+  poopCooldown: 5
+  eatTimeout: 30
 --- !u!61 &137469005056166510
 BoxCollider2D:
   m_ObjectHideFlags: 0

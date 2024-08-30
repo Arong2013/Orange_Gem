@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ebd11592d85564180e800f8a52c932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: f57d6ec398b1365409decbf88b94656b, type: 3}
   lifetime: 1
   detectionRadius: 3
 --- !u!50 &5185425729860003557

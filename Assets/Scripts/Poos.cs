@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Poos : MonoBehaviour
 {
+    [SerializeField] AudioClip audioClip;
     public float lifetime = 1f; // 몇 초 뒤에 삭제할지 설정
     public float detectionRadius = 3f; // Ground 오브젝트를 탐지할 반경
 
     void Start()
     {
+        SoundManager.Instance.PlaySFX(audioClip);
         // 일정 시간 뒤에 DeleteAndChangeGround 메서드 호출
         Invoke("DeleteAndChangeGround", lifetime);
     }

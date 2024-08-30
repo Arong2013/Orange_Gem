@@ -15,6 +15,10 @@ public class Bug : MonoBehaviour
     void Start()
     {
         startPosition = transform.position; // 시작 위치 저장
+
+        // GameManager에 벌레 생성 증가 보고
+        GameManager.Instance.IncrementBugCreated();
+
         StartCoroutine(MoveRandomly()); // 랜덤 이동 코루틴 시작
     }
 
@@ -89,6 +93,7 @@ public class Bug : MonoBehaviour
         // 서서히 투명화하고 삭제
         StartCoroutine(FadeOutAndDestroy());
     }
+
     private IEnumerator FadeOutAndDestroy()
     {
         SpriteRenderer[] spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
@@ -107,6 +112,9 @@ public class Bug : MonoBehaviour
             fadeTime += Time.deltaTime;
             yield return null;
         }
+
+        // 오브젝트 삭제 전에 GameManager에 벌레 사망 증가 보고
+        GameManager.Instance.IncrementBugDied();
 
         // 오브젝트 삭제
         Destroy(gameObject);
