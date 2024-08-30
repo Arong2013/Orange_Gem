@@ -19,15 +19,18 @@ public class GameManager : Singleton<GameManager>
 
     public List<GameObject> specificObjectsToSpawn = new List<GameObject>();
 
-    public GameObject Bird;
+    public GameObject Bird,Tree;
 
     private void Start()
     {
         // 게임 시작 시 모든 Ground 컴포넌트를 가진 오브젝트를 리스트로 저장
         allGroundObjects = new List<Ground>(FindObjectsOfType<Ground>());
 
+
         StartCoroutine(CheckLevel1Grounds()); // 레벨 1 확인 코루틴 시작
         StartCoroutine(CheckLevel2Grounds()); // 레벨 2 확인 코루틴 시작
+        StartCoroutine(CheckLevel3Grounds()); // 레벨 3 확인 코루틴 시작
+
     }
 
     private IEnumerator CheckLevel1Grounds()
@@ -110,6 +113,38 @@ public class GameManager : Singleton<GameManager>
             Debug.Log($"레벨 2 이상인 Ground 오브젝트 수: {level2OrHigherCount}, 필드에 있는 Bug 오브젝트 수: {bugCount}");
         }
     }
+
+    private IEnumerator CheckLevel3Grounds()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(30f); // 20초 대기
+
+            int maxSpecificObjectCount = 3; // 생성할 최대 개수
+            int specificObjectCount = 0;
+
+            // 레벨이 3 이상인 오브젝트들에서 특정 오브젝트 생성
+            foreach (Ground ground in allGroundObjects)
+            {
+                if (ground.levelUpCount >= 3 && specificObjectCount < maxSpecificObjectCount)
+                {
+                    if (UnityEngine.Random.value <= 0.01f) // 2% 확률
+                    {
+                        GameObject randomObject = specificObjectsToSpawn[UnityEngine.Random.Range(0, specificObjectsToSpawn.Count)];
+                        Instantiate(Tree.gameObject, ground.transform.position, Quaternion.identity);
+                        specificObjectCount++;
+                    }
+
+                    // 스프라이트 업데이트
+                    UpdateSprite(ground.GetComponent<SpriteRenderer>(), ground.levelUpCount);
+                }
+            }
+
+            // 디버그 로그 출력
+            Debug.Log($"레벨 3 이상에서 생성된 특정 오브젝트 수: {specificObjectCount}");
+        }
+    }
+
 
     public void UpdateSprite(SpriteRenderer spriteRenderer, int levelUpCount)
     {
