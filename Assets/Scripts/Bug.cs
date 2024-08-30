@@ -10,7 +10,7 @@ public class Bug : MonoBehaviour
     public float detectionRadius = 2f; // 주변 Ground 탐지 반경
 
     private Vector3 startPosition;
-    private bool facingRight = true; // 현재 바라보고 있는 방향을 저장
+    public bool facingRight = true; // 현재 바라보고 있는 방향을 저장
 
     void Start()
     {

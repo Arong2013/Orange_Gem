@@ -15,6 +15,10 @@ public class SoundManager : Singleton<SoundManager>
     protected override void Awake()
     {
         base.Awake();
+
+        // DontDestroyOnLoad를 통해 씬 전환 시 파괴되지 않도록 설정
+        DontDestroyOnLoad(gameObject);
+
         if (bgmSource == null)
         {
             Debug.LogError("BGM AudioSource is not assigned in the inspector.");
@@ -24,11 +28,11 @@ public class SoundManager : Singleton<SoundManager>
             Debug.LogError("SFX AudioSources are not assigned in the inspector.");
         }
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-           // UiUtils.GetUI<SettingUI>().gameObject.SetActive(!UiUtils.GetUI<SettingUI>().gameObject.activeSelf);
             TogglePause();
         }
     }
@@ -76,6 +80,7 @@ public class SoundManager : Singleton<SoundManager>
         }
         return null;
     }
+
     public void SetBGMVolume(float volume)
     {
         bgmVolume = volume;
@@ -84,10 +89,12 @@ public class SoundManager : Singleton<SoundManager>
             bgmSource.volume = bgmVolume * masterVolume;
         }
     }
+
     public void SetSFXVolume(float volume)
     {
         sfxVolume = volume;
     }
+
     public void SetMasterVolume(float volume)
     {
         masterVolume = volume;
@@ -97,10 +104,12 @@ public class SoundManager : Singleton<SoundManager>
         }
         // SFX는 PlaySFX 메서드 호출 시 볼륨이 반영됨
     }
+
     public float GetBGMVolume()
     {
         return bgmVolume;
     }
+
     public float GetSFXVolume()
     {
         return sfxVolume;
@@ -110,6 +119,7 @@ public class SoundManager : Singleton<SoundManager>
     {
         return masterVolume;
     }
+
     private void TogglePause()
     {
         isPaused = !isPaused;

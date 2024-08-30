@@ -13,8 +13,13 @@ public class TitleSceneController : MonoBehaviour
 
     private Vector2 initialPosition;
 
+    public AudioClip BGMSource;
+
     void Start()
     {
+        Time.timeScale = 1f;
+        SoundManager.Instance.PlayBGM(BGMSource);
+
         // 시작 버튼에 OnClickListener 추가
         if (startButton != null)
         {
@@ -52,6 +57,8 @@ public class TitleSceneController : MonoBehaviour
             // 이동 완료 후 정확한 최종 위치 설정
             uiElementToMove.anchoredPosition = initialPosition + moveDistance;
         }
+
+        // 씬 로드
         SceneManager.LoadScene("MainScene"); // "MainScene"은 이동할 씬의 이름입니다.
     }
 }

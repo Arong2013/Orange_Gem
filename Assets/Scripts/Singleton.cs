@@ -22,7 +22,6 @@ public abstract class Singleton<T> : SerializedMonoBehaviour where T : Component
         }
         else if(instance != this)
         {
-          
             Destroy(gameObject);
         }
     }

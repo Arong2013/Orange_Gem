@@ -315,6 +315,7 @@ MonoBehaviour:
   moveTime: 2
   waitTime: 1
   detectionRadius: 2
+  facingRight: 0
 --- !u!61 &5929656896438576298
 BoxCollider2D:
   m_ObjectHideFlags: 0

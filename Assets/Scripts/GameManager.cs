@@ -35,9 +35,8 @@ public class GameManager : Singleton<GameManager>
     public float gameTime = 90f; // 게임 시간 (60초)
     private bool isGameOver = false;
 
-
-
     public GameObject gameOverUI;
+    public AudioClip BGM;
 
     private void Start()
     {

@@ -27,24 +27,25 @@ public class OriMinDle : MonoBehaviour
 
         // 일정 시간 동안 크기를 원래대로 돌려놓기
         transform.DOScale(new Vector3(0.5f, 0.5f, 0.5f), delayBeforeSpawn)
-            .OnUpdate(() =>
-            {
-                // 현재 스케일을 기반으로 스프라이트 변경
-                float currentScale = transform.localScale.x;
+    .OnUpdate(() =>
+    {
+        // 현재 스케일을 기반으로 스프라이트 변경
+        float currentScale = transform.localScale.x;
 
-                if (Mathf.Approximately(currentScale, 0.1f))
-                {
-                    GetComponent<SpriteRenderer>().sprite = m1;
-                }
-                else if (Mathf.Approximately(currentScale, 0.3f))
-                {
-                    GetComponent<SpriteRenderer>().sprite = m2;
-                }
-                else if (Mathf.Approximately(currentScale, 0.5f))
-                {
-                    GetComponent<SpriteRenderer>().sprite = m3;
-                }
-            });
+        if (currentScale <= 0.15f)
+        {
+            GetComponent<SpriteRenderer>().sprite = m1;
+        }
+        else if (currentScale > 0.15f && currentScale <= 0.35f)
+        {
+            GetComponent<SpriteRenderer>().sprite = m2;
+        }
+        else if (currentScale > 0.35f)
+        {
+            GetComponent<SpriteRenderer>().sprite = m3;
+        }
+    });
+
 
         // 크기가 원래대로 돌아온 후 대기
         yield return new WaitForSeconds(delayBeforeSpawn);

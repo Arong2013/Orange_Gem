@@ -22,9 +22,11 @@ public class Bird : MonoBehaviour
     private bool isGenerating = false; // 현재 오브젝트 생성 중인지 여부
     private bool isPooping = false; // 현재 똥을 누고 있는지 여부
     private float lastEatTime; // 마지막으로 먹이를 먹은 시간
+    [SerializeField] AudioClip audioClip;
 
     void Start()
     {
+        SoundManager.Instance.PlaySFX(audioClip);
         startPosition = transform.position; // 시작 위치 저장
         lastEatTime = Time.time; // 현재 시간을 마지막 먹이 시간으로 초기화
         StartCoroutine(MoveRoutine()); // 포물선 이동 루틴 시작
@@ -229,7 +231,7 @@ public class Bird : MonoBehaviour
                     yield return null;
                 }
 
-                // 오브젝트 삭제
+                GameManager.Instance.IncrementBirdDied();
                 Destroy(gameObject);
                 yield break; // 코루틴 종료
             }
