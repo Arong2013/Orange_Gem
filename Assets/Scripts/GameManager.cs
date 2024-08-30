@@ -11,8 +11,11 @@ public class GameManager : Singleton<GameManager>
     public Vector2 Size; // 맵의 크기
     public GameObject Ground; // 생성할 오브
 
-    public GameObject monther,son;
-  
+    public GameObject monther, son,Mindle;
+    // Odin Inspector를 사용해 인스펙터에서 설정 가능한 레벨별 스프라이트 딕셔너리
+    [OdinSerialize, DictionaryDrawerSettings(KeyLabel = "Level", ValueLabel = "Sprite")]
+    public Dictionary<int, Sprite> levelSprites;
+
     [Button("Place Fwang Tiles")] // OdinInspector를 사용한 버튼으로 에디터에서 바로 실행 가능
     private void PlaceFwangTiles()
     {
@@ -36,6 +39,16 @@ public class GameManager : Singleton<GameManager>
                 newFwang.name = $"Fwang_{x}_{y}"; // 오브젝트의 이름 지정
                 newFwang.transform.parent = fwangParent.transform; // FwangParent의 자식으로 설정
             }
+        }
+    }
+
+
+    public void UpdateSprite(SpriteRenderer spriteRenderer ,int levelUpCount)
+    {
+
+        if (levelSprites.ContainsKey(levelUpCount) )
+        {
+            spriteRenderer.sprite = levelSprites[levelUpCount];
         }
     }
 }

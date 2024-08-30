@@ -11,7 +11,10 @@ public class MindleSeed : MonoBehaviour
     public int spawnCount = 10; // 생성할 오브젝트의 수
     public float initialDelay = 3f; // 바람의 영향을 받지 않는 시간
     public float movementDuration = 5f; // 이동에 걸리는 시간
-    public float movementRadius = 5f; // 이동할 반경
+    public float movementRadius = 10f; // 이동할 반경
+
+
+    public bool SpawnMothers;
 
     private void Start()
     {
@@ -38,17 +41,29 @@ public class MindleSeed : MonoBehaviour
 
     private void SpawnObjects()
     {
+        int randIndex = Random.Range(0, spawnCount); // 특정 오브젝트에 추가 행동을 위한 랜덤 인덱스 설정
         for (int i = 0; i < spawnCount; i++)
         {
-            // 중앙에서 생성
             GameObject newObject = Instantiate(GameManager.Instance.son.gameObject, transform.position, Quaternion.identity);
+            StartCoroutine(MoveObjectAndSpawn(newObject));
 
-            // 오브젝트에 이동 코루틴 시작
-            StartCoroutine(MoveObject(newObject));
+            // randIndex와 현재 인덱스가 일치하는 경우 SpawnMothers를 true로 설정
+            if (i == randIndex)
+            {
+                newObject.GetComponent<MindleSeed>().SpawnMothers = true;
+            }
+            else
+            {
+                // 20% 확률로 SpawnMothers를 true로 설정
+                if (Random.value <= 0.2f) // Random.value는 0.0f에서 1.0f 사이의 값을 반환합니다.
+                {
+                    newObject.GetComponent<MindleSeed>().SpawnMothers = true;
+                }
+            }
         }
     }
 
-    private IEnumerator MoveObject(GameObject obj)
+    private IEnumerator MoveObjectAndSpawn(GameObject obj)
     {
         // 랜덤한 목표 지점 생성 (일직선으로 이동할 목표 지점)
         Vector3 targetPosition = transform.position + new Vector3(
@@ -56,23 +71,18 @@ public class MindleSeed : MonoBehaviour
             Random.Range(-movementRadius, movementRadius),
             0f
         );
-
-        // DOTween을 사용하여 일직선으로 이동
-        obj.transform.DOMove(targetPosition, movementDuration)
-            .SetEase(Ease.Linear)
-            .OnComplete(() =>
-            {
-                // 이동 완료 후 실행할 코드
-                Debug.Log("Object finished moving to the target position.");
-            });
-
+        obj.transform.DOMove(targetPosition, movementDuration);
         yield return null;
     }
-
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, searchRadius);
+    }
+    private void OnDestroy()
+    {
+        if (SpawnMothers)
+            Instantiate(GameManager.Instance.Mindle.gameObject, transform.position, Quaternion.identity);
     }
 }

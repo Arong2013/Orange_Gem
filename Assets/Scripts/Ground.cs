@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -11,9 +12,10 @@ public class Ground : SerializedMonoBehaviour
     [SerializeField] Sprite BadGround;
     private SpriteRenderer spriteRenderer;
 
-    // Odin Inspector를 사용해 인스펙터에서 설정 가능한 레벨별 스프라이트 딕셔너리
-    [OdinSerialize,DictionaryDrawerSettings(KeyLabel = "Level", ValueLabel = "Sprite")]
-    public Dictionary<int, Sprite> levelSprites;
+
+
+    public float levelUpCooldown = 2f; // 레벨업 쿨다운 시간
+    private bool canLevelUp = true; // 레벨업 가능 여부
 
     private void Start()
     {
@@ -23,28 +25,30 @@ public class Ground : SerializedMonoBehaviour
 
     public void ChangeGround()
     {
+        if (!canLevelUp) return; // 쿨다운 중이면 레벨업 불가
+
         if (isGood)
         {
             levelUpCount++;
-            UpdateSprite(); // 레벨이 올라갈 때 스프라이트 교체 시도
+            GameManager.Instance.UpdateSprite(spriteRenderer,levelUpCount); // 레벨이 올라갈 때 스프라이트 교체 시도
+            //StartCoroutine(LevelUpCooldown()); // 쿨다운 시작
         }
         else
         {
             isGood = true;
-            spriteRenderer.sprite = GetSpriteForCurrentLevel();
+            levelUpCount++;
+            GameManager.Instance.UpdateSprite(spriteRenderer,levelUpCount); 
         }
     }
-
-    private void UpdateSprite()
-    {
-        if (levelSprites.ContainsKey(levelUpCount))
-        {
-            spriteRenderer.sprite = levelSprites[levelUpCount];
-        }
-    }
-
     private Sprite GetSpriteForCurrentLevel()
     {
         return BadGround; // 레벨에 해당하는 스프라이트가 없으면 기본 스프라이트로 설정
+    }
+
+    private IEnumerator LevelUpCooldown()
+    {
+        canLevelUp = false; // 레벨업 불가 상태로 설정
+        yield return new WaitForSeconds(levelUpCooldown); // 쿨다운 시간 대기
+        canLevelUp = true; // 다시 레벨업 가능 상태로 설정
     }
 }
