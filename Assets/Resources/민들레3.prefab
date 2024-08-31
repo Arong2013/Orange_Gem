@@ -53,7 +53,7 @@ MonoBehaviour:
   movementDuration: 5
   m1: {fileID: 21300000, guid: 1f90a38c620c60244ac52014b99d07f5, type: 3}
   m2: {fileID: 21300000, guid: 5ffd64a543caf7b4083907f83973f51e, type: 3}
-  m3: {fileID: 21300000, guid: b2d91da3201c7e64d9506382b1815fc9, type: 3}
+  m3: {fileID: 1145199962, guid: b2d91da3201c7e64d9506382b1815fc9, type: 3}
 --- !u!61 &1692756447236143839
 BoxCollider2D:
   m_ObjectHideFlags: 0

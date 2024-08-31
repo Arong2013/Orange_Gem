@@ -17,6 +17,8 @@ public class MindleSeed : MonoBehaviour
     private bool facingRight = true; // 현재 바라보고 있는 방향을 저장
     private bool canDash = true; // 대쉬 가능 여부
 
+    public Transform spriteTransform; // 스프라이트를 회전시킬 자식 객체의 Transform
+
     private void Start()
     {
         if (!isMonther)
@@ -34,7 +36,6 @@ public class MindleSeed : MonoBehaviour
 
         if (isMonther && other.gameObject.TryGetComponent<OriMinDle>(out OriMinDle oriMinDle) && canDash)
         {
-            // Rigidbody2D의 mass를 0.8로 설정
             Rigidbody2D rb = GetComponent<Rigidbody2D>();
             if (rb != null)
             {
@@ -45,20 +46,20 @@ public class MindleSeed : MonoBehaviour
 
     private IEnumerator TemporaryMassChange(Rigidbody2D rb)
     {
-        // 대쉬 불가능 설정
         canDash = false;
+        rb.mass = 0.5f;
 
-        // mass를 0.8로 설정
-        rb.mass = 0.8f;
+        // 스프라이트만 빠르게 회전 시작
+        Sequence rotationSequence = DOTween.Sequence()
+            .Append(spriteTransform.DORotate(new Vector3(0, 0, 360), 0.2f, RotateMode.FastBeyond360).SetLoops(-1, LoopType.Restart));
 
-        // 2초 대기
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
 
-        // mass를 1로 복구
+        rotationSequence.Kill();
+        spriteTransform.rotation = Quaternion.identity; // 회전 각도 초기화
+
         rb.mass = 1f;
-
-        // 10초 후 다시 대쉬 가능
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(6f);
         canDash = true;
     }
 
@@ -74,20 +75,18 @@ public class MindleSeed : MonoBehaviour
 
     private void SpawnObjects()
     {
-        int randIndex = Random.Range(0, spawnCount); // 특정 오브젝트에 추가 행동을 위한 랜덤 인덱스 설정
+        int randIndex = Random.Range(0, spawnCount);
         for (int i = 0; i < spawnCount; i++)
         {
             GameObject newObject = Instantiate(GameManager.Instance.son.gameObject, transform.position, Quaternion.identity);
             StartCoroutine(MoveObjectAndSpawn(newObject));
 
-            // randIndex와 현재 인덱스가 일치하는 경우 SpawnMothers를 true로 설정
             if (i == randIndex)
             {
                 newObject.GetComponent<MindleSeed>().SpawnMothers = true;
             }
             else
             {
-                // 20% 확률로 SpawnMothers를 true로 설정
                 if (Random.value <= 0.2f)
                 {
                     newObject.GetComponent<MindleSeed>().SpawnMothers = true;
@@ -98,7 +97,6 @@ public class MindleSeed : MonoBehaviour
 
     private IEnumerator MoveObjectAndSpawn(GameObject obj)
     {
-        // 랜덤한 목표 지점 생성 (일직선으로 이동할 목표 지점)
         Vector3 targetPosition = transform.position + new Vector3(
             Random.Range(-movementRadius, movementRadius),
             Random.Range(-movementRadius, movementRadius),
